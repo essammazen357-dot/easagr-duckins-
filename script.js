@@ -45,7 +45,6 @@ function renderProducts(category = "all") {
         <div class="product-category">${product.category.toUpperCase()} · EASGER DUCKINS</div>
         <span class="product-price">${money(product.price)}</span>
         ${product.oldPrice ? `<span class="old-price">${money(product.oldPrice)}</span>` : ""}
-        ${product.id === 1 ? `<label class="product-color-label" for="hoodie-color">CHOOSE COLOR</label><select class="product-color-select" id="hoodie-color" data-product-color="1"><option value="">Select hoodie color</option><option value="White">White</option><option value="Black">Black</option><option value="Grey">Grey</option></select>` : ""}
         <button class="add-button" type="button" data-add="${product.id}">ADD TO BAG +</button>
       </div>
     </article>
@@ -65,13 +64,8 @@ productGrid.addEventListener("click", event => {
   if (!button) return;
   const product = products.find(item => item.id === Number(button.dataset.add));
   if (!product) return;
-  const chosenColor = product.id === 1 ? productGrid.querySelector('[data-product-color="1"]')?.value || "" : "";
-  if (product.id === 1 && !chosenColor) {
-    showToast("Please choose White, Black, or Grey first.");
-    productGrid.querySelector('[data-product-color="1"]')?.focus();
-    return;
-  }
-  cart.push({ ...product, lineId: `${Date.now()}-${Math.random()}`, size: "", color: chosenColor });
+  // Color is selected inside the shopping cart, not on the product card.
+  cart.push({ ...product, lineId: `${Date.now()}-${Math.random()}`, size: "", color: "" });
   renderCart();
   showToast("Added to your Duck Bag!");
 });
