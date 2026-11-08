@@ -117,3 +117,5 @@ button { cursor: pointer; }
 /* Product photo for Classic Duck Hoodie */
 .product-photo { width: 100%; height: 100%; object-fit: contain; display: block; position: absolute; inset: 0; z-index: 1; background: #e8e7e2; }
 .product-art:has(.product-photo)::before { display: none; }
+
+.product-color-label{display:block;margin:10px 0 5px;font-size:10px;font-weight:900;letter-spacing:.8px}.product-color-select{display:block;width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12px;margin-bottom:9px}
