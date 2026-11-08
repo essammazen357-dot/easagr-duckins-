@@ -115,5 +115,5 @@ button { cursor: pointer; }
 @media (max-width: 600px) { .story-grid { grid-template-columns: 1fr; gap: 11px; }.story-card { padding: 20px; } }
 
 /* Product photo for Classic Duck Hoodie */
-.product-photo { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; z-index: 0; }
+.product-photo { width: 100%; height: 100%; object-fit: contain; display: block; position: absolute; inset: 0; z-index: 1; background: #e8e7e2; }
 .product-art:has(.product-photo)::before { display: none; }
