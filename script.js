@@ -2,7 +2,7 @@
 const STORE_EMAIL = "essammazen357@gmail.com";
 
 const products = [
-  { id: 1, name: "Classic Duck Hoodie", category: "hoodies", price: 400, oldPrice: 1050, tag: "BEST SELLER", emoji: "🧥", art: "#f5d66c" },
+  { id: 1, name: "Classic Duck Hoodie", category: "hoodies", price: 400, oldPrice: 1050, tag: "BEST SELLER", emoji: "🧥", art: "#f5d66c", image: "images/classic-duck-hoodie.jpeg" },
   { id: 2, name: "Midnight Oversized Hoodie", category: "hoodies", price: 920, tag: "NEW DROP", emoji: "🧥", art: "#b7c4b5" },
   { id: 3, name: "Quack Club Hoodie", category: "hoodies", price: 790, oldPrice: 950, tag: "SALE", emoji: "🧥", art: "#f1b59b" },
   { id: 4, name: "Golden Beak Hoodie", category: "hoodies", price: 880, tag: "LIMITED", emoji: "🧥", art: "#f4c84b" },
@@ -38,7 +38,7 @@ function renderProducts(category = "all") {
     <article class="product-card">
       <div class="product-art" style="--art:${product.art}">
         <span class="product-tag">${product.tag || "DUCKINS"}</span>
-        <span class="product-emoji">${product.emoji}</span>
+        ${product.image ? `<img class="product-photo" src="${product.image}" alt="${product.name}">` : `<span class="product-emoji">${product.emoji}</span>`}
       </div>
       <div class="product-info">
         <h3>${product.name}</h3>
