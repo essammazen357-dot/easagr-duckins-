@@ -2,7 +2,7 @@
 const STORE_EMAIL = "essammazen357@gmail.com";
 
 const products = [
-  { id: 1, name: "Classic Duck Hoodie", category: "hoodies", price: 850, oldPrice: 1050, tag: "BEST SELLER", emoji: "🧥", art: "#f5d66c" },
+  { id: 1, name: "Classic Duck Hoodie", category: "hoodies", price: 400, oldPrice: 1050, tag: "BEST SELLER", emoji: "🧥", art: "#f5d66c" },
   { id: 2, name: "Midnight Oversized Hoodie", category: "hoodies", price: 920, tag: "NEW DROP", emoji: "🧥", art: "#b7c4b5" },
   { id: 3, name: "Quack Club Hoodie", category: "hoodies", price: 790, oldPrice: 950, tag: "SALE", emoji: "🧥", art: "#f1b59b" },
   { id: 4, name: "Golden Beak Hoodie", category: "hoodies", price: 880, tag: "LIMITED", emoji: "🧥", art: "#f4c84b" },
@@ -141,16 +141,23 @@ function showToast(message) {
 
 document.getElementById("order-form").addEventListener("submit", async event => {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = document.getElementById("form-status");
   const button = document.getElementById("submit-order");
 
+  const showStatus = (message, kind = "") => {
+    status.textContent = message;
+    status.dataset.state = kind;
+  };
+
   if (!cart.length) {
-    status.textContent = "Your bag is empty. Add a product first.";
+    showStatus("Your bag is empty. Add a product first.", "error");
     return;
   }
+
   const incomplete = cart.find(item => !item.size || !item.color);
   if (incomplete) {
-    status.textContent = `Please choose a size and color for ${incomplete.name}.`;
+    showStatus(`Please choose a size and color for ${incomplete.name}.`, "error");
     return;
   }
 
@@ -160,26 +167,39 @@ document.getElementById("order-form").addEventListener("submit", async event => 
   const orderDetails = `${orderLines.join("\n")}\n\nSubtotal: ${money(cart.reduce((sum, item) => sum + item.price, 0))}`;
   document.getElementById("order-details").value = orderDetails;
 
-  // FormSubmit forwards the order to the store email after its one-time email activation.
-  const formData = new FormData(event.currentTarget);
   button.disabled = true;
   button.textContent = "SENDING ORDER...";
-  status.textContent = "Sending your order...";
+  showStatus("Sending your order...", "loading");
 
   try {
     const response = await fetch(`https://formsubmit.co/ajax/${STORE_EMAIL}`, {
       method: "POST",
-      body: formData,
+      body: new FormData(form),
       headers: { "Accept": "application/json" }
     });
-    if (!response.ok) throw new Error("Email service did not accept the order.");
-    status.textContent = "Order submitted! Thank you — we'll contact you soon. 🦆";
+
+    let result;
+    try {
+      result = await response.json();
+    } catch (_) {
+      throw new Error("The email service returned an unreadable response.");
+    }
+
+    if (!response.ok || result.success === false || result.success === "false") {
+      throw new Error(result.message || `Email service error (${response.status}).`);
+    }
+
+    showStatus("Your order was sent successfully! We'll contact you soon. 🦆", "success");
     showToast("Your order was submitted!");
     cart = [];
     renderCart();
-    event.currentTarget.reset();
+    form.reset();
   } catch (error) {
-    status.textContent = "We couldn't send the order. Please check your connection and try again.";
+    console.error("Easger Duckins order error:", error);
+    showStatus(
+      "We couldn't confirm that your order was sent. Check your internet connection and make sure the store email has been activated with FormSubmit, then try again.",
+      "error"
+    );
   } finally {
     button.disabled = false;
     button.textContent = "SUBMIT ORDER ↗";
