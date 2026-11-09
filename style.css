@@ -119,3 +119,41 @@ button { cursor: pointer; }
 .product-art:has(.product-photo)::before { display: none; }
 
 .product-color-label{display:block;margin:10px 0 5px;font-size:10px;font-weight:900;letter-spacing:.8px}.product-color-select{display:block;width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12px;margin-bottom:9px}
+
+
+/* Classic Duck Hoodie image gallery */
+.product-photo[data-open-gallery="classic-duck"] { cursor: zoom-in; }
+.product-gallery-modal {
+  position: fixed; inset: 0; z-index: 99999;
+  display: none; align-items: center; justify-content: center;
+  padding: 22px; background: rgba(0,0,0,.82);
+}
+.product-gallery-modal.is-open { display: flex; }
+.product-gallery-panel {
+  position: relative; width: min(920px, 96vw); max-height: 94vh;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  padding: 22px; border-radius: 16px; background: #fff; overflow: auto;
+}
+.product-gallery-main {
+  display: block; max-width: 100%; width: auto; height: auto;
+  max-height: 70vh; object-fit: contain;
+}
+.product-gallery-close {
+  position: sticky; top: 0; align-self: flex-end; z-index: 1;
+  width: 40px; height: 40px; border: 0; border-radius: 50%;
+  background: #171717; color: #fff; font-size: 30px; line-height: 1;
+  cursor: pointer; margin-bottom: -40px;
+}
+.product-gallery-thumbs {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
+}
+.product-gallery-thumb {
+  width: 82px; height: 96px; padding: 3px; overflow: hidden;
+  border: 2px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer;
+}
+.product-gallery-thumb.active { border-color: #111; }
+.product-gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 600px) {
+  .product-gallery-panel { padding: 12px; }
+  .product-gallery-main { max-height: 66vh; }
+}

@@ -38,7 +38,7 @@ function renderProducts(category = "all") {
     <article class="product-card">
       <div class="product-art" style="--art:${product.art}">
         <span class="product-tag">${product.tag || "DUCKINS"}</span>
-        ${product.image ? `<img class="product-photo" src="${product.image}" alt="${product.name}">` : `<span class="product-emoji">${product.emoji}</span>`}
+        ${product.image ? `<img class="product-photo" src="${product.image}" alt="${product.name}" ${product.name === "Classic Duck Hoodie" ? 'data-open-gallery="classic-duck" role="button" tabindex="0"' : ""}>` : `<span class="product-emoji">${product.emoji}</span>`}
       </div>
       <div class="product-info">
         <h3>${product.name}</h3>
@@ -209,3 +209,69 @@ document.getElementById("order-form").addEventListener("submit", async event => 
 
 renderProducts();
 renderCart();
+
+
+// Classic Duck Hoodie product gallery: original product photo + the two customer-provided photos.
+const classicDuckGallery = [
+  { src: products.find(p => p.name === "Classic Duck Hoodie").image, alt: "Classic Duck Hoodie - main product photo" },
+  { src: "images/classic-duck-hoodie-front-side.jpeg", alt: "Classic Duck Hoodie - front and side views" },
+  { src: "images/classic-duck-hoodie-model.jpeg", alt: "Classic Duck Hoodie - model photo" }
+];
+
+function openClassicDuckGallery() {
+  let modal = document.getElementById("classic-duck-gallery");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "classic-duck-gallery";
+    modal.className = "product-gallery-modal";
+    modal.innerHTML = `
+      <div class="product-gallery-panel" role="dialog" aria-modal="true" aria-label="Classic Duck Hoodie photos">
+        <button class="product-gallery-close" type="button" aria-label="Close gallery">&times;</button>
+        <img class="product-gallery-main" alt="Classic Duck Hoodie">
+        <div class="product-gallery-thumbs"></div>
+      </div>`;
+    document.body.appendChild(modal);
+
+    modal.addEventListener("click", event => {
+      if (event.target === modal || event.target.closest(".product-gallery-close")) {
+        modal.classList.remove("is-open");
+      }
+      const thumb = event.target.closest("[data-gallery-index]");
+      if (thumb) showClassicDuckGalleryImage(Number(thumb.dataset.galleryIndex));
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") modal.classList.remove("is-open");
+    });
+  }
+  modal.classList.add("is-open");
+  showClassicDuckGalleryImage(0);
+}
+
+function showClassicDuckGalleryImage(index) {
+  const modal = document.getElementById("classic-duck-gallery");
+  if (!modal) return;
+  const photo = classicDuckGallery[index];
+  modal.querySelector(".product-gallery-main").src = photo.src;
+  modal.querySelector(".product-gallery-main").alt = photo.alt;
+  modal.querySelector(".product-gallery-thumbs").innerHTML = classicDuckGallery.map((item, i) => `
+    <button type="button" class="product-gallery-thumb ${i === index ? "active" : ""}" data-gallery-index="${i}" aria-label="Show photo ${i + 1}">
+      <img src="${item.src}" alt="${item.alt}">
+    </button>`).join("");
+}
+
+productGrid.addEventListener("click", event => {
+  const image = event.target.closest('[data-open-gallery="classic-duck"]');
+  if (image) {
+    event.preventDefault();
+    event.stopPropagation();
+    openClassicDuckGallery();
+  }
+});
+
+productGrid.addEventListener("keydown", event => {
+  const image = event.target.closest('[data-open-gallery="classic-duck"]');
+  if (image && (event.key === "Enter" || event.key === " ")) {
+    event.preventDefault();
+    openClassicDuckGallery();
+  }
+});
